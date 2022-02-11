@@ -50,4 +50,10 @@ public class Menu {
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
 	}
+
+	public void displayExitMessage() {
+		out.println("");
+		out.println("Thank you for your business!");
+		out.flush();
+	}
 }
