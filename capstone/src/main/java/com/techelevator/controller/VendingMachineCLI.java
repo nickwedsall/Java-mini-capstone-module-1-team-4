@@ -36,34 +36,14 @@ public class VendingMachineCLI {
 
     public void run() {
         // Where we should read the file?
-        if (loadVendingMachineInitialInventory()) {
-            while (true) {
-                String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-                // Switch case situation called for here
-                if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-                    // display vending machine items
-                } else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-                    // do purchase
-                    while (true) {
-                        choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-
-                        if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
-                            break;
-                        }
-                    }
-                } else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
-                    // display exit message
-                    menu.displayExitMessage();
-                    // exit
-                    break;
-                }
-            }
+        if (loadVendingMachine()) {
+            mainMenu();
         } else {
             menu.displayErrorMessage();
         }
     }
 
-    private boolean loadVendingMachineInitialInventory() {
+    private boolean loadVendingMachine() {
         boolean loadSuccess = false;
 
         // eat the error and return loadSuccess
@@ -84,4 +64,38 @@ public class VendingMachineCLI {
 
         return loadSuccess;
     }
+
+    private void mainMenu() {
+        while (true) {
+            String choice = getChoice();
+            // Switch case situation called for here
+            if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
+                // display vending machine items
+                displayVendingMachineItem();
+            } else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
+                // do purchase
+                purchaseMenu();
+            } else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+                // display exit message
+                menu.displayExitMessage();
+                // exit
+                break;
+            }
+        }
+    }
+
+    private void purchaseMenu() {
+        String choice = getChoice();
+        while (true) {
+            if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
+                break;
+            }
+        }
+    }
+
+    private String getChoice() {
+        return (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+    }
+
+    private void displayVendingMachineItem() {}
 }
