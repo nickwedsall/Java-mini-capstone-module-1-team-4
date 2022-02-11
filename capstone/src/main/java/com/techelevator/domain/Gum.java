@@ -1,4 +1,4 @@
-package com.techelevator;
+package com.techelevator.domain;
 
 public class Gum extends VendingItem {
     private static final String DISPENSE_MESSAGE_PREFIX = "Chew Chew";

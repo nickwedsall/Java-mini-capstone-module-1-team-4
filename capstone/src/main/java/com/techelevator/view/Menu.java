@@ -56,4 +56,10 @@ public class Menu {
 		out.println("Thank you for your business!");
 		out.flush();
 	}
+
+	public void displayErrorMessage() {
+		out.println("");
+		out.println("Failed to load file!  VendingMachine will self destruct in five seconds...");
+		out.flush();
+	}
 }

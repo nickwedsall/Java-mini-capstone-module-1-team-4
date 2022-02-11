@@ -1,4 +1,4 @@
-package com.techelevator;
+package com.techelevator.domain;
 
 public abstract class VendingItem {
     private final String itemName; //Final?!
