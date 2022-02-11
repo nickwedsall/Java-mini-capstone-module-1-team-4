@@ -23,4 +23,9 @@ public abstract class VendingItem {
     public double getPrice() {
         return price;
     }
+
+    @Override
+    public String toString() {
+        return itemName + " " + price;
+    }
 }
