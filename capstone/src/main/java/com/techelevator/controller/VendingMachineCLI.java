@@ -54,7 +54,6 @@ public class VendingMachineCLI {
     }
 
     public void run() {
-        // Where we should read the file?
         if (loadVendingMachine()) {
             mainMenu();
         } else {
@@ -65,11 +64,6 @@ public class VendingMachineCLI {
     private boolean loadVendingMachine() {
         boolean loadSuccess = false;
 
-        // eat the error and return loadSuccess
-        // populate our map
-        // this is where we will read from a file
-        // try-with-resources bullshit
-
         File filePath = new File(FILE_PATH);
         try (java.util.Scanner fileReader = new Scanner(filePath)) {
             while (fileReader.hasNextLine()) {
@@ -78,7 +72,7 @@ public class VendingMachineCLI {
             }
             loadSuccess = true;
         } catch (FileNotFoundException e) {
-            // eat exception???
+            // eat exception
         }
 
         return loadSuccess;
@@ -136,10 +130,6 @@ public class VendingMachineCLI {
             case FEED_MONEY_MENU_OPTION_EXIT:
                 break;
         }
-    }
-
-    private void selectProductMenu() {
-        displayVendingMachineItems();
     }
 
     private String getMainMenuChoice() {
