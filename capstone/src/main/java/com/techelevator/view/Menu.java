@@ -57,7 +57,7 @@ public class Menu {
 
     public void displayVendingMachineItems(String vendingMachineItems) {
         out.println();
-        out.println(vendingMachineItems);
+        out.print(vendingMachineItems);
         out.flush();
     }
 
