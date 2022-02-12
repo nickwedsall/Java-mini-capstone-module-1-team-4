@@ -2,6 +2,7 @@ package com.techelevator.model;
 
 import com.techelevator.domain.*;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public class VendingMachine {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
         for (String slotLocation : slotLocationToVendingItems.keySet()) {
             if (slotLocationToVendingItems.get(slotLocation).isEmpty())
                 sb.append("SOLD OUT").append(System.lineSeparator());
@@ -89,7 +91,7 @@ public class VendingMachine {
 
                 sb.append(SLOT_LOCATION).append(slotLocation).append(" ")
                         .append(ITEM_NAME).append(itemName).append(" ")
-                        .append(PRICE).append(price).append(" ")
+                        .append(PRICE).append(currency.format(price)).append(" ")
                         .append(QUANTITY).append(vendingItemQuantity)
                         .append(System.lineSeparator());
             }
