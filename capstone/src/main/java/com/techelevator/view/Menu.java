@@ -75,4 +75,8 @@ public class Menu {
         out.println("Failed to load file!  VendingMachine will self destruct in five seconds...");
         out.flush();
     }
+
+    public void displayCurrentMoneyProvided() {
+
+    }
 }
