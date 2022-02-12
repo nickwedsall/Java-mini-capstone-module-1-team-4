@@ -1,12 +1,8 @@
 package com.techelevator.view;
 
-import com.techelevator.domain.VendingItem;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Menu {
@@ -26,6 +22,13 @@ public class Menu {
             choice = getChoiceFromUserInput(options);
         }
         return choice;
+    }
+
+    public String getSlotLocationFromUser() {
+        out.println();
+        out.print("Enter slot location: ");
+        out.flush();
+        return in.nextLine();
     }
 
     private Object getChoiceFromUserInput(Object[] options) {
@@ -61,6 +64,24 @@ public class Menu {
         out.flush();
     }
 
+    public void displayCurrentMoneyProvided(String currentMoneyProvided) {
+        out.println();
+        out.println("Current Money Provided: " + currentMoneyProvided);
+        out.flush();
+    }
+
+    public void displayMenuItemDoesNotExist() {
+        out.println();
+        out.println("Invalid vending code");
+        out.flush();
+    }
+
+    public void displayMenuItemIsSoldOut() {
+        out.println();
+        out.println("Item is SOLD OUT");
+        out.flush();
+    }
+
     public void displayExitMessage() {
         out.println("");
         out.println("Thank you for your business!");
@@ -70,12 +91,6 @@ public class Menu {
     public void displayErrorMessage() {
         out.println("");
         out.println("Failed to load file!  VendingMachine will self destruct in five seconds...");
-        out.flush();
-    }
-
-    public void displayCurrentMoneyProvided(double currentMoneyProvided) {
-        out.println();
-        out.println("Current Money Provided: " + currentMoneyProvided);
         out.flush();
     }
 }

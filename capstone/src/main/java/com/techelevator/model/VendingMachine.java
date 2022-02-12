@@ -10,8 +10,9 @@ import java.util.TreeMap;
 
 public class VendingMachine {
     private double balance; // TODO: NumberFormat currency instance for balance instance variable
-
     private final Map<String, List<VendingItem>> slotLocationToVendingItems; //TODO: make VendingItem abstract class and at least one child class
+
+    private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
 
     // Format helper constants for toString() method
     private static final String SLOT_LOCATION = "Slot Location";
@@ -30,6 +31,10 @@ public class VendingMachine {
         this.balance += moneyToAdd;
     }
 
+    public VendingItem dispenseVendingItem(String slotLocation) {
+        return slotLocationToVendingItems.get(slotLocation).get(0);
+    }
+
     public void addVendingItem(String line) {
         String[] parts = line.split("\\|");
         String slotLocation = parts[0];
@@ -40,6 +45,14 @@ public class VendingMachine {
 
         List<VendingItem> list = makeVendingItems(itemName, price, className, 5);
         slotLocationToVendingItems.put(slotLocation, list);
+    }
+
+    public boolean isVendingItemInStock(String slotLocation) {
+        return slotLocationToVendingItems.get(slotLocation).size() != 0;
+    }
+
+    public boolean isValidSlotLocation(String slotLocation) {
+        return slotLocationToVendingItems.containsKey(slotLocation);
     }
 
     private List<VendingItem> makeVendingItems(String itemName, double price, String className, int quantity) {
@@ -73,13 +86,16 @@ public class VendingMachine {
         return balance;
     }
 
+    public String getBalanceAsCurrency() {
+        return CURRENCY.format(getBalance());
+    }
+
     // Formatting toString() method to print slot location, item name, price, and quantity
     // Does not keep record of what is sold out, only indicates that the slot is SOLD OUT
     // if list is empty
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        NumberFormat currency = NumberFormat.getCurrencyInstance();
         for (String slotLocation : slotLocationToVendingItems.keySet()) {
             if (slotLocationToVendingItems.get(slotLocation).isEmpty())
                 sb.append("SOLD OUT").append(System.lineSeparator());
@@ -91,7 +107,7 @@ public class VendingMachine {
 
                 sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
                         .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
-                        .append(PRICE).append(DELIMITER).append(currency.format(price)).append(SPACE)
+                        .append(PRICE).append(DELIMITER).append(CURRENCY.format(price)).append(SPACE)
                         .append(QUANTITY).append(DELIMITER).append(vendingItemQuantity)
                         .append(System.lineSeparator());
             }

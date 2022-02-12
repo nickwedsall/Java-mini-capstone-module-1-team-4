@@ -1,5 +1,6 @@
 package com.techelevator.controller;
 
+import com.techelevator.domain.VendingItem;
 import com.techelevator.model.VendingMachine;
 import com.techelevator.view.Menu;
 
@@ -102,11 +103,10 @@ public class VendingMachineCLI {
                 feedMoneyMenu();
             } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT)) {
                 selectProductMenu();
-            }
-            else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
+            } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
-            menu.displayCurrentMoneyProvided(vendingMachine.getBalance());
+            menu.displayCurrentMoneyProvided(vendingMachine.getBalanceAsCurrency());
         }
     }
 
@@ -130,8 +130,22 @@ public class VendingMachineCLI {
         }
     }
 
-    private void selectProductMenu() {
+    private VendingItem selectProductMenu() {
+        VendingItem vendingItem = null;
+
         menu.displayVendingMachineItems(vendingMachine.toString());
+        menu.displayCurrentMoneyProvided(vendingMachine.getBalanceAsCurrency());
+
+        String slotLocation = menu.getSlotLocationFromUser();
+
+        if (!vendingMachine.isValidSlotLocation(slotLocation)) {
+            menu.displayMenuItemDoesNotExist();
+        } else if (!vendingMachine.isVendingItemInStock(slotLocation)) {
+            menu.displayMenuItemIsSoldOut();
+        } else {
+            vendingItem = vendingMachine.dispenseVendingItem(slotLocation);
+        }
+        return vendingItem;
     }
 
     private String getMainMenuChoice() {
