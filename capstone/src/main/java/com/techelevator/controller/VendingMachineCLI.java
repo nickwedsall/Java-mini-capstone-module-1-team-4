@@ -16,7 +16,8 @@ public class VendingMachineCLI {
     private static final String[] MAIN_MENU_OPTIONS = {
             MAIN_MENU_OPTION_DISPLAY_ITEMS,
             MAIN_MENU_OPTION_PURCHASE,
-            MAIN_MENU_OPTION_EXIT};
+            MAIN_MENU_OPTION_EXIT,
+    };
 
     private static final String PURCHASE_MENU_OPTION_FEED_MONEY = "Feed Money";
     private static final String PURCHASE_MENU_OPTION_SELECT = "Select Product";
@@ -24,7 +25,19 @@ public class VendingMachineCLI {
     private static final String[] PURCHASE_MENU_OPTIONS = {
             PURCHASE_MENU_OPTION_FEED_MONEY,
             PURCHASE_MENU_OPTION_SELECT,
-            PURCHASE_MENU_OPTION_FINISH};
+            PURCHASE_MENU_OPTION_FINISH,
+    };
+
+    private static final String FEED_MONEY_MENU_OPTION_ONE_DOLLAR = "$1.00";
+    private static final String FEED_MONEY_MENU_OPTION_TWO_DOLLARS = "$2.00";
+    private static final String FEED_MONEY_MENU_OPTION_FIVE_DOLLARS = "$5.00";
+    private static final String FEED_MONEY_MENU_OPTION_TEN_DOLLARS = "10.00";
+    private static final String[] FEED_MONEY_MENU_OPTIONS = {
+            FEED_MONEY_MENU_OPTION_ONE_DOLLAR,
+            FEED_MONEY_MENU_OPTION_TWO_DOLLARS,
+            FEED_MONEY_MENU_OPTION_FIVE_DOLLARS,
+            FEED_MONEY_MENU_OPTION_TEN_DOLLARS,
+    };
 
     private Menu menu;
     private VendingMachine vendingMachine;
@@ -87,9 +100,15 @@ public class VendingMachineCLI {
     private void purchaseMenu() {
         while (true) { // TODO: Refactor to switch-case statement
             String choice = getPurchaseMenuChoice();
-            if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
+            if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
+                // goto feedMoneyMenu();
+            } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT)) {
+                // goto selectProductMenu();
+            }
+            else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
+            // displayCurrentMoneyProvided();
         }
     }
 
