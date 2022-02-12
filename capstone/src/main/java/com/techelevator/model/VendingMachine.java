@@ -14,10 +14,12 @@ public class VendingMachine {
     private final Map<String, List<VendingItem>> slotLocationToVendingItems; //TODO: make VendingItem abstract class and at least one child class
 
     // Format helper constants for toString() method
-    private static final String SLOT_LOCATION = "Slot Location: ";
-    private static final String ITEM_NAME = "Item: ";
-    private static final String PRICE = "Price: ";
-    private static final String QUANTITY = "Quantity: ";
+    private static final String SLOT_LOCATION = "Slot Location";
+    private static final String ITEM_NAME = "Item";
+    private static final String PRICE = "Price";
+    private static final String QUANTITY = "Quantity";
+    private static final String DELIMITER = ": ";
+    private static final String SPACE = " ";
 
     public VendingMachine() {
         this.balance = 0.00;
@@ -40,8 +42,6 @@ public class VendingMachine {
         slotLocationToVendingItems.put(slotLocation, list);
     }
 
-
-    // Factory design pattern here could make things easier
     private List<VendingItem> makeVendingItems(String itemName, double price, String className, int quantity) {
         List<VendingItem> list = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
@@ -89,10 +89,10 @@ public class VendingMachine {
                 String itemName = vendingItem.getItemName();
                 double price = vendingItem.getPrice();
 
-                sb.append(SLOT_LOCATION).append(slotLocation).append(" ")
-                        .append(ITEM_NAME).append(itemName).append(" ")
-                        .append(PRICE).append(currency.format(price)).append(" ")
-                        .append(QUANTITY).append(vendingItemQuantity)
+                sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
+                        .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
+                        .append(PRICE).append(DELIMITER).append(currency.format(price)).append(SPACE)
+                        .append(QUANTITY).append(DELIMITER).append(vendingItemQuantity)
                         .append(System.lineSeparator());
             }
         }

@@ -1,7 +1,5 @@
 package com.techelevator.domain;
 
-import java.text.NumberFormat;
-
 public abstract class VendingItem {
     private final String itemName; //Final?!
     private final double price;
