@@ -76,7 +76,9 @@ public class Menu {
         out.flush();
     }
 
-    public void displayCurrentMoneyProvided() {
-
+    public void displayCurrentMoneyProvided(double currentMoneyProvided) {
+        out.println();
+        out.println("Current Money Provided: " + currentMoneyProvided);
+        out.flush();
     }
 }

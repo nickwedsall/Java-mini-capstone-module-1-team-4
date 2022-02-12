@@ -108,7 +108,7 @@ public class VendingMachineCLI {
             else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
-            // displayCurrentMoneyProvided();
+            menu.displayCurrentMoneyProvided(vendingMachine.getBalance());
         }
     }
 

@@ -13,7 +13,7 @@ public class VendingMachine {
     private Map<String, List<VendingItem>> vendingCodeToVendingItemList; //TODO: make VendingItem abstract class and at least one child class
 
     public VendingMachine() {
-        this.balance = 0;
+        this.balance = 0.00;
         this.vendingCodeToVendingItemList = new TreeMap<>();
     }
 
@@ -54,5 +54,9 @@ public class VendingMachine {
 
     public Map<String, List<VendingItem>> getVendingCodeToVendingItemList() {
         return vendingCodeToVendingItemList;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 }
