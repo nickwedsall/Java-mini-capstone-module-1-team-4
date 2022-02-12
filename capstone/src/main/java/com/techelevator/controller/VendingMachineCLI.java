@@ -36,11 +36,13 @@ public class VendingMachineCLI {
     private static final String FEED_MONEY_MENU_OPTION_TWO_DOLLARS = "$2.00";
     private static final String FEED_MONEY_MENU_OPTION_FIVE_DOLLARS = "$5.00";
     private static final String FEED_MONEY_MENU_OPTION_TEN_DOLLARS = "$10.00";
+    private static final String FEED_MONEY_MENU_OPTION_EXIT = "Exit";
     private static final String[] FEED_MONEY_MENU_OPTIONS = {
             FEED_MONEY_MENU_OPTION_ONE_DOLLAR,
             FEED_MONEY_MENU_OPTION_TWO_DOLLARS,
             FEED_MONEY_MENU_OPTION_FIVE_DOLLARS,
             FEED_MONEY_MENU_OPTION_TEN_DOLLARS,
+            FEED_MONEY_MENU_OPTION_EXIT,
     };
 
     private Menu menu;
@@ -130,6 +132,8 @@ public class VendingMachineCLI {
                 break;
             case FEED_MONEY_MENU_OPTION_TEN_DOLLARS:
                 vendingMachine.addToBalance(TEN_DOLLARS);
+                break;
+            case FEED_MONEY_MENU_OPTION_EXIT:
                 break;
         }
     }
