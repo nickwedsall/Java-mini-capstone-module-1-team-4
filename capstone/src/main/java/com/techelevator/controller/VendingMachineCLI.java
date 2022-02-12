@@ -45,8 +45,8 @@ public class VendingMachineCLI {
             FEED_MONEY_MENU_OPTION_EXIT,
     };
 
-    private Menu menu;
-    private VendingMachine vendingMachine;
+    private final Menu menu;
+    private final VendingMachine vendingMachine;
 
     public VendingMachineCLI(Menu menu, VendingMachine vendingMachine) {
         this.menu = menu;
@@ -63,7 +63,7 @@ public class VendingMachineCLI {
     }
 
     private boolean loadVendingMachine() {
-        boolean loadSuccess = true;
+        boolean loadSuccess = false;
 
         // eat the error and return loadSuccess
         // populate our map
