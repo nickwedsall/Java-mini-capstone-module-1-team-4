@@ -13,7 +13,7 @@ public class VendingMachine {
     private final Map<String, List<VendingItem>> slotLocationToVendingItems; //TODO: make VendingItem abstract class and at least one child class
 
     // Format helper constants for toString() method
-    private static final String SLOT_LOCATION = "Code: ";
+    private static final String SLOT_LOCATION = "Slot Location: ";
     private static final String ITEM_NAME = "Item: ";
     private static final String PRICE = "Price: ";
     private static final String QUANTITY = "Quantity: ";
