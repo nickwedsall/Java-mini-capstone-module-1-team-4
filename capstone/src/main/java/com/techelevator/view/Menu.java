@@ -55,12 +55,9 @@ public class Menu {
         out.flush();
     }
 
-    public void displayVendingMachineItems(Map<String, List<VendingItem>> map) {
+    public void displayVendingMachineItems(String vendingMachineItems) {
         out.println();
-        for (String key : map.keySet()) {
-            if (!map.get(key).isEmpty())
-                out.println(key + " " + map.get(key).get(0));
-        }
+        out.println(vendingMachineItems);
         out.flush();
     }
 

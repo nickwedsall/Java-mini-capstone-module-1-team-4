@@ -88,7 +88,7 @@ public class VendingMachineCLI {
             // Switch case situation called for here?
             if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
                 // display vending machine items
-                displayVendingMachineItem();
+                displayVendingMachineItems();
             } else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
                 // do purchase
                 purchaseMenu();
@@ -134,6 +134,10 @@ public class VendingMachineCLI {
         }
     }
 
+    private void selectProductMenu() {
+        displayVendingMachineItems();
+    }
+
     private String getMainMenuChoice() {
         return (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
     }
@@ -146,7 +150,7 @@ public class VendingMachineCLI {
         return (String) menu.getChoiceFromOptions(FEED_MONEY_MENU_OPTIONS);
     }
 
-    private void displayVendingMachineItem() {
-        menu.displayVendingMachineItems(vendingMachine.getVendingCodeToVendingItemList());
+    private void displayVendingMachineItems() {
+        menu.displayVendingMachineItems(vendingMachine.toString());
     }
 }
