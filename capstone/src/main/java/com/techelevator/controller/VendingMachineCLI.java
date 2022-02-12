@@ -85,20 +85,20 @@ public class VendingMachineCLI {
     }
 
     private void mainMenu() {
-        while (true) {
+        boolean loop = true;
+        while (loop) {
             String choice = getMainMenuChoice();
-            // Switch case situation called for here?
-            if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-                // display vending machine items
-                displayVendingMachineItems();
-            } else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-                // do purchase
-                purchaseMenu();
-            } else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
-                // display exit message
-                menu.displayExitMessage();
-                // exit
-                break;
+            switch (choice) {
+                case MAIN_MENU_OPTION_DISPLAY_ITEMS:
+                    displayVendingMachineItems();
+                    break;
+                case MAIN_MENU_OPTION_PURCHASE:
+                    purchaseMenu();
+                    break;
+                case MAIN_MENU_OPTION_EXIT:
+                    menu.displayExitMessage();
+                    loop = false;
+                    break;
             }
         }
     }
