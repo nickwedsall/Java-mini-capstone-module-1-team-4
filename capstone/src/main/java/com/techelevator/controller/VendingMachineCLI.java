@@ -63,7 +63,6 @@ public class VendingMachineCLI {
 
     private boolean loadVendingMachine() {
         boolean loadSuccess = false;
-
         File filePath = new File(FILE_PATH);
         try (java.util.Scanner fileReader = new Scanner(filePath)) {
             while (fileReader.hasNextLine()) {
@@ -74,7 +73,6 @@ public class VendingMachineCLI {
         } catch (FileNotFoundException e) {
             // eat exception
         }
-
         return loadSuccess;
     }
 
@@ -103,7 +101,7 @@ public class VendingMachineCLI {
             if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
                 feedMoneyMenu();
             } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT)) {
-                // goto selectProductMenu();
+                selectProductMenu();
             }
             else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
@@ -130,6 +128,10 @@ public class VendingMachineCLI {
             case FEED_MONEY_MENU_OPTION_EXIT:
                 break;
         }
+    }
+
+    private void selectProductMenu() {
+        menu.displayVendingMachineItems(vendingMachine.toString());
     }
 
     private String getMainMenuChoice() {
