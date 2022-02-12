@@ -1,20 +1,58 @@
 package com.techelevator.model;
 
-import com.techelevator.domain.VendingItem;
+import com.techelevator.domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class VendingMachine {
     private double balance; // Possible currency Instance of NumberFormat type... maybe
-    private Map<String, List<VendingItem>> vendingItems; //TODO: make VendingItem abstract class and at least one child class
+
+    private Map<String, List<VendingItem>> vendingCodeToVendingItemList; //TODO: make VendingItem abstract class and at least one child class
 
     public VendingMachine() {
         this.balance = 0;
-        this.vendingItems = new TreeMap<>();
-        // If we populate the vending machine by reading from a file
-        // we should have a load() function called in the constructor
-        // load();
+        this.vendingCodeToVendingItemList = new TreeMap<>();
+    }
+
+    public void addVendingItem(String line) {
+        String[] parts = line.split("\\|");
+        String vendingCode = parts[0];
+        String itemName = parts[1];
+        String priceAsDouble = parts[2];
+        double price = Double.parseDouble(priceAsDouble);
+        String className = parts[3];
+
+        List<VendingItem> list = makeFiveItems(itemName, price, className);
+        vendingCodeToVendingItemList.put(vendingCode, list);
+    }
+
+    private List<VendingItem> makeFiveItems(String itemName, double price, String className) {
+        List<VendingItem> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            VendingItem vendingItem = null;
+            switch (className) {
+                case "Chip":
+                    vendingItem = new Chip(itemName, price);
+                    break;
+                case "Candy":
+                    vendingItem = new Candy(itemName, price);
+                    break;
+                case "Drink":
+                    vendingItem = new Drink(itemName, price);
+                    break;
+                case "Gum":
+                    vendingItem = new Gum(itemName, price);
+                    break;
+            }
+            list.add(vendingItem);
+        }
+        return list;
+    }
+
+    public Map<String, List<VendingItem>> getVendingCodeToVendingItemList() {
+        return vendingCodeToVendingItemList;
     }
 }

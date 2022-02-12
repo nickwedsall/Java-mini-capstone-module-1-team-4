@@ -44,7 +44,7 @@ public class VendingMachineCLI {
     }
 
     private boolean loadVendingMachine() {
-        boolean loadSuccess = false;
+        boolean loadSuccess = true;
 
         // eat the error and return loadSuccess
         // populate our map
@@ -53,10 +53,10 @@ public class VendingMachineCLI {
 
         File filePath = new File(FILE_PATH);
         try (java.util.Scanner fileReader = new Scanner(filePath)) {
-
-            // do something
-
-
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                vendingMachine.addVendingItem(line);
+            }
             loadSuccess = true;
         } catch (FileNotFoundException e) {
             // eat exception???
@@ -67,8 +67,8 @@ public class VendingMachineCLI {
 
     private void mainMenu() {
         while (true) {
-            String choice = getChoice();
-            // Switch case situation called for here
+            String choice = getMainMenuChoice();
+            // Switch case situation called for here?
             if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
                 // display vending machine items
                 displayVendingMachineItem();
@@ -85,17 +85,23 @@ public class VendingMachineCLI {
     }
 
     private void purchaseMenu() {
-        String choice = getChoice();
-        while (true) {
+        while (true) { // TODO: Refactor to switch-case statement
+            String choice = getPurchaseMenuChoice();
             if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
         }
     }
 
-    private String getChoice() {
+    private String getMainMenuChoice() {
+        return (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+    }
+
+    private String getPurchaseMenuChoice() {
         return (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
     }
 
-    private void displayVendingMachineItem() {}
+    private void displayVendingMachineItem() {
+        menu.displayVendingMachineItems(vendingMachine.getVendingCodeToVendingItemList());
+    }
 }
