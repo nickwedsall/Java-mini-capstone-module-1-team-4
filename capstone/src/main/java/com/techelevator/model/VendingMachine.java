@@ -2,19 +2,24 @@ package com.techelevator.model;
 
 import com.techelevator.domain.*;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class VendingMachine {
-    private double balance; // Possible currency Instance of NumberFormat type... maybe
+    private double balance; // TODO: NumberFormat currency instance for balance instance variable
 
-    private Map<String, List<VendingItem>> vendingCodeToVendingItemList; //TODO: make VendingItem abstract class and at least one child class
+    private final Map<String, List<VendingItem>> vendingCodeToVendingItemList; //TODO: make VendingItem abstract class and at least one child class
 
     public VendingMachine() {
         this.balance = 0.00;
         this.vendingCodeToVendingItemList = new TreeMap<>();
+    }
+
+    public void addToBalance(double moneyToAdd) {
+        this.balance += moneyToAdd;
     }
 
     public void addVendingItem(String line) {
@@ -29,6 +34,8 @@ public class VendingMachine {
         vendingCodeToVendingItemList.put(vendingCode, list);
     }
 
+
+    // Factory design pattern here could make things easier
     private List<VendingItem> makeFiveItems(String itemName, double price, String className) {
         List<VendingItem> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {

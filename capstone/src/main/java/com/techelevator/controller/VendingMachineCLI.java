@@ -28,10 +28,14 @@ public class VendingMachineCLI {
             PURCHASE_MENU_OPTION_FINISH,
     };
 
+    private static final double ONE_DOLLAR = 1.00;
+    private static final double TWO_DOLLARS = 2.00;
+    private static final double FIVE_DOLLARS = 5.00;
+    private static final double TEN_DOLLARS = 10.00;
     private static final String FEED_MONEY_MENU_OPTION_ONE_DOLLAR = "$1.00";
     private static final String FEED_MONEY_MENU_OPTION_TWO_DOLLARS = "$2.00";
     private static final String FEED_MONEY_MENU_OPTION_FIVE_DOLLARS = "$5.00";
-    private static final String FEED_MONEY_MENU_OPTION_TEN_DOLLARS = "10.00";
+    private static final String FEED_MONEY_MENU_OPTION_TEN_DOLLARS = "$10.00";
     private static final String[] FEED_MONEY_MENU_OPTIONS = {
             FEED_MONEY_MENU_OPTION_ONE_DOLLAR,
             FEED_MONEY_MENU_OPTION_TWO_DOLLARS,
@@ -101,7 +105,7 @@ public class VendingMachineCLI {
         while (true) { // TODO: Refactor to switch-case statement
             String choice = getPurchaseMenuChoice();
             if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-                // goto feedMoneyMenu();
+                feedMoneyMenu();
             } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT)) {
                 // goto selectProductMenu();
             }
@@ -112,12 +116,34 @@ public class VendingMachineCLI {
         }
     }
 
+    private void feedMoneyMenu() {
+        String choice = getFeedMoneyMenuChoice();
+        switch (choice) {
+            case FEED_MONEY_MENU_OPTION_ONE_DOLLAR:
+                vendingMachine.addToBalance(ONE_DOLLAR);
+                break;
+            case FEED_MONEY_MENU_OPTION_TWO_DOLLARS:
+                vendingMachine.addToBalance(TWO_DOLLARS);
+                break;
+            case FEED_MONEY_MENU_OPTION_FIVE_DOLLARS:
+                vendingMachine.addToBalance(FIVE_DOLLARS);
+                break;
+            case FEED_MONEY_MENU_OPTION_TEN_DOLLARS:
+                vendingMachine.addToBalance(TEN_DOLLARS);
+                break;
+        }
+    }
+
     private String getMainMenuChoice() {
         return (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
     }
 
     private String getPurchaseMenuChoice() {
         return (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+    }
+
+    private String getFeedMoneyMenuChoice() {
+        return (String) menu.getChoiceFromOptions(FEED_MONEY_MENU_OPTIONS);
     }
 
     private void displayVendingMachineItem() {
