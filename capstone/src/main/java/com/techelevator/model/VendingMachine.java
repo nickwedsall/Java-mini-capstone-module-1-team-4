@@ -35,15 +35,15 @@ public class VendingMachine {
         double price = Double.parseDouble(priceAsDouble);
         String className = parts[3];
 
-        List<VendingItem> list = makeFiveItems(itemName, price, className);
+        List<VendingItem> list = makeVendingItems(itemName, price, className, 5);
         slotLocationToVendingItems.put(slotLocation, list);
     }
 
 
     // Factory design pattern here could make things easier
-    private List<VendingItem> makeFiveItems(String itemName, double price, String className) {
+    private List<VendingItem> makeVendingItems(String itemName, double price, String className, int quantity) {
         List<VendingItem> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < quantity; i++) {
             VendingItem vendingItem = null;
             switch (className) {
                 case "Chip":
