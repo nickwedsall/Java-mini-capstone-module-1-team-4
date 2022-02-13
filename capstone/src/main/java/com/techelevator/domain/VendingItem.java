@@ -1,7 +1,9 @@
 package com.techelevator.domain;
 
+import java.text.NumberFormat;
+
 public abstract class VendingItem {
-    private final String itemName; //Final?!
+    private final String itemName;
     private final double price;
     private static final String DISPENSE_MESSAGE_SUFFIX = ", Yum!";
 
@@ -26,6 +28,6 @@ public abstract class VendingItem {
 
     @Override
     public String toString() {
-        return itemName + " " + price;
+        return itemName + " " + NumberFormat.getCurrencyInstance().format(price);
     }
 }

@@ -120,6 +120,8 @@ public class VendingMachineCLI {
             } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
                 selectProductMenu();
             } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
+                // write code here
+                menu.displayMessage(vendingMachine.giveChange());
                 break;
             }
         }
@@ -164,6 +166,7 @@ public class VendingMachineCLI {
                     .get(slotLocation).get(0).getPrice());
             if (vendingItemPrice <= vendingMachine.getBalance()) {
                 vendingItem = vendingMachine.dispenseVendingItem(slotLocation);
+                menu.displayMessage(vendingItem.toString());
                 menu.displayMessage(vendingItem.getDispenseMessage());
             } else
                 menu.displayMessage(INSUFFICIENT_FUNDS);

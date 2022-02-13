@@ -24,7 +24,7 @@ public class VendingMachine {
     private static final String QUANTITY = "Quantity";
     private static final String DELIMITER = ": ";
     private static final String SPACE = " ";
-    private static final String SOLD_OUT = "SOLD_OUT";
+    private static final String SOLD_OUT = "SOLD OUT";
 
     private static final int CENTS_PER_DOLLAR = 100;
     private static final int CENTS_PER_QUARTER = 25;
@@ -118,8 +118,12 @@ public class VendingMachine {
 
         // balanceAsInt should always be a multiple of CENTS_PER_NICKEL
         int nickels = balanceAsInt / CENTS_PER_NICKEL;
-
-        return String.format("Change due: %d quarters %d dimes %d nickels", quarters, dimes, nickels);
+        // ternary operator (condition ? true : false)
+        // inline ternary operator
+        return String.format("Change due: %d " + (quarters == 1 ? "quarter" : "quarters") +
+                " %d " + (dimes == 1 ? "dime" : "dimes") +
+                " %d " + (nickels == 1 ? "nickel" : "nickels"),
+                quarters, dimes, nickels);
     }
 
     private void resetBalance() {
