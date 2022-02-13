@@ -122,7 +122,7 @@ public class VendingMachine {
         return String.format("Change due: %d quarters %d dimes %d nickels", quarters, dimes, nickels);
     }
 
-    public void resetBalance() {
+    private void resetBalance() {
         this.balance = 0;
     }
 

@@ -24,12 +24,12 @@ public class VendingMachineCLI {
 
     // Purchase Menu options
     private static final String PURCHASE_MENU_OPTION_FEED_MONEY = "Feed Money";
-    private static final String PURCHASE_MENU_OPTION_SELECT = "Select Product";
-    private static final String PURCHASE_MENU_OPTION_FINISH = "Finish Transaction";
+    private static final String PURCHASE_MENU_OPTION_SELECT_PRODUCT = "Select Product";
+    private static final String PURCHASE_MENU_OPTION_FINISH_TRANSACTION = "Finish Transaction";
     private static final String[] PURCHASE_MENU_OPTIONS = {
             PURCHASE_MENU_OPTION_FEED_MONEY,
-            PURCHASE_MENU_OPTION_SELECT,
-            PURCHASE_MENU_OPTION_FINISH,
+            PURCHASE_MENU_OPTION_SELECT_PRODUCT,
+            PURCHASE_MENU_OPTION_FINISH_TRANSACTION,
     };
 
     // Feed Money menu options
@@ -117,9 +117,9 @@ public class VendingMachineCLI {
             String choice = getPurchaseMenuChoice();
             if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
                 feedMoneyMenu();
-            } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT)) {
+            } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
                 selectProductMenu();
-            } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
+            } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
                 break;
             }
         }
@@ -153,7 +153,7 @@ public class VendingMachineCLI {
         menu.displayMessage(vendingMachine.toString());
         menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.getBalanceAsFormattedCurrency());
 
-        String slotLocation = menu.getSlotLocationFromUser();
+        String slotLocation = menu.getSlotLocationInput();
 
         if (!vendingMachine.isValidSlotLocation(slotLocation)) {
             menu.displayMessage(INVALID_SLOT_LOCATION);
@@ -176,7 +176,7 @@ public class VendingMachineCLI {
     }
 
     private String getPurchaseMenuChoice() {
-        return (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+        return (String) menu.getPurchaseMenuChoiceFromOptions(PURCHASE_MENU_OPTIONS, vendingMachine.getBalanceAsFormattedCurrency());
     }
 
     private String getFeedMoneyMenuChoice() {

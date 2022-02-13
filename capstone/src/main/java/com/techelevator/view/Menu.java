@@ -24,13 +24,23 @@ public class Menu {
         return choice;
     }
 
-    // public void displayPurchaseMenu()
-
-    public String getSlotLocationFromUser() {
+    private void displayMenuOptions(Object[] options) {
         out.println();
-        out.print("Enter slot location: ");
+        for (int i = 0; i < options.length; i++) {
+            int optionNum = i + 1;
+            out.println(optionNum + ") " + options[i]);
+        }
+        out.print(System.lineSeparator() + "Please choose an option >>> ");
         out.flush();
-        return in.nextLine();
+    }
+
+    public Object getPurchaseMenuChoiceFromOptions(Object[] options, String currentMoneyProvided) {
+        Object choice = null;
+        while (choice == null) {
+            displayPurchaseMenuOptions(options, currentMoneyProvided);
+            choice = getChoiceFromUserInput(options);
+        }
+        return choice;
     }
 
     private Object getChoiceFromUserInput(Object[] options) {
@@ -50,12 +60,21 @@ public class Menu {
         return choice;
     }
 
-    public void displayMenuOptions(Object[] options) {
+    public String getSlotLocationInput() {
+        out.println();
+        out.print("Enter slot location: ");
+        out.flush();
+        return in.nextLine();
+    }
+
+    private void displayPurchaseMenuOptions(Object[] options, String currentMoneyProvided) {
         out.println();
         for (int i = 0; i < options.length; i++) {
             int optionNum = i + 1;
             out.println(optionNum + ") " + options[i]);
         }
+        out.println();
+        out.println("Current money provided: " + currentMoneyProvided);
         out.print(System.lineSeparator() + "Please choose an option >>> ");
         out.flush();
     }
