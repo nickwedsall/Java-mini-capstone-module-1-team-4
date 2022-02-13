@@ -2,11 +2,10 @@ package com.techelevator.model;
 
 import com.techelevator.domain.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class VendingMachine {
     private double balance;
@@ -51,16 +50,25 @@ public class VendingMachine {
         return vendingItem;
     }
 
-    public void loadVendingItemLine(String line) {
-        String[] parts = line.split("\\|");
-        String slotLocation = parts[0];
-        String itemName = parts[1];
-        String priceAsDouble = parts[2];
-        double price = Double.parseDouble(priceAsDouble);
-        String className = parts[3];
-
-        List<VendingItem> list = makeVendingItems(itemName, price, className, 5);
-        slotLocationToVendingItems.put(slotLocation, list);
+    public boolean loadVendingItemLine(String filePath) {
+        boolean loadSuccess = false;
+        File file = new File(filePath);
+        try (Scanner fileReader = new Scanner(file)) {
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                String[] parts = line.split("\\|");
+                String slotLocation = parts[0];
+                String itemName = parts[1];
+                double price = Double.parseDouble(parts[2]);
+                String className = parts[3];
+                List<VendingItem> list = makeVendingItems(itemName, price, className, 5);
+                slotLocationToVendingItems.put(slotLocation, list);
+            }
+            loadSuccess = true;
+        } catch (FileNotFoundException e) {
+            // eat exception
+        }
+        return loadSuccess;
     }
 
     public boolean isVendingItemInStock(String slotLocation) {
@@ -118,11 +126,12 @@ public class VendingMachine {
 
         // balanceAsInt should always be a multiple of CENTS_PER_NICKEL
         int nickels = balanceAsInt / CENTS_PER_NICKEL;
+
         // ternary operator (condition ? true : false)
         // inline ternary operator
         return String.format("Change due: %d " + (quarters == 1 ? "quarter" : "quarters") +
-                " %d " + (dimes == 1 ? "dime" : "dimes") +
-                " %d " + (nickels == 1 ? "nickel" : "nickels"),
+                        " %d " + (dimes == 1 ? "dime" : "dimes") +
+                        " %d " + (nickels == 1 ? "nickel" : "nickels"),
                 quarters, dimes, nickels);
     }
 

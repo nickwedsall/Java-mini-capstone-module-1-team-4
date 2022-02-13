@@ -4,10 +4,6 @@ import com.techelevator.domain.VendingItem;
 import com.techelevator.model.VendingMachine;
 import com.techelevator.view.Menu;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 public class VendingMachineCLI {
     // File path to load Vending Machine
     private static final String FILE_PATH = "vendingmachine.csv";
@@ -77,20 +73,9 @@ public class VendingMachineCLI {
         }
     }
 
-    //TODO: Possibly refactor this code into the VendingMachine class
+    //TODO: Refactor load code into VendingMachine
     private boolean loadVendingMachine() {
-        boolean loadSuccess = false;
-        File filePath = new File(FILE_PATH);
-        try (java.util.Scanner fileReader = new Scanner(filePath)) {
-            while (fileReader.hasNextLine()) {
-                String line = fileReader.nextLine();
-                vendingMachine.loadVendingItemLine(line);
-            }
-            loadSuccess = true;
-        } catch (FileNotFoundException e) {
-            // eat exception
-        }
-        return loadSuccess;
+        return vendingMachine.loadVendingItemLine(FILE_PATH);
     }
 
     private void mainMenu() {
