@@ -9,8 +9,10 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class VendingMachineCLI {
+    // File path to load Vending Machine
     private static final String FILE_PATH = "vendingmachine.csv";
 
+    // Main Menu options
     private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
     private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
     private static final String MAIN_MENU_OPTION_EXIT = "Exit";
@@ -20,6 +22,7 @@ public class VendingMachineCLI {
             MAIN_MENU_OPTION_EXIT,
     };
 
+    // Purchase Menu options
     private static final String PURCHASE_MENU_OPTION_FEED_MONEY = "Feed Money";
     private static final String PURCHASE_MENU_OPTION_SELECT = "Select Product";
     private static final String PURCHASE_MENU_OPTION_FINISH = "Finish Transaction";
@@ -29,6 +32,8 @@ public class VendingMachineCLI {
             PURCHASE_MENU_OPTION_FINISH,
     };
 
+    // Feed Money menu options
+    // TODO: use currency of NumberFormat instead of saving Strings of dollar amounts
     private static final double ONE_DOLLAR = 1.00;
     private static final double TWO_DOLLARS = 2.00;
     private static final double FIVE_DOLLARS = 5.00;
@@ -46,6 +51,17 @@ public class VendingMachineCLI {
             FEED_MONEY_MENU_OPTION_EXIT,
     };
 
+    // All error messages to feed to Menu class
+    private static final String INSUFFICIENT_FUNDS = "Insufficient funds!!";
+    private static final String INVALID_SLOT_LOCATION = "Invalid slot location!!";
+    private static final String VENDING_ITEM_IS_SOLD_OUT = "Vending item is SOLD OUT!!";
+    private static final String VENDING_MACHINE_LOAD_ERROR_MESSAGE = "Failed to load file! VendingMachine will self destruct in five seconds...";
+
+    // All menu prompts
+    private static final String CURRENT_MONEY_PROVIDED = "Current Money Provided: ";
+    private static final String VENDING_MACHINE_EXIT_MESSAGE = "Thank you for your business!";
+
+
     private final Menu menu;
     private final VendingMachine vendingMachine;
 
@@ -58,17 +74,18 @@ public class VendingMachineCLI {
         if (loadVendingMachine()) {
             mainMenu();
         } else {
-            menu.displayErrorMessage();
+            menu.displayMessage(VENDING_MACHINE_LOAD_ERROR_MESSAGE);
         }
     }
 
+    //TODO: Possibly refactor this code into the VendingMachine class
     private boolean loadVendingMachine() {
         boolean loadSuccess = false;
         File filePath = new File(FILE_PATH);
         try (java.util.Scanner fileReader = new Scanner(filePath)) {
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
-                vendingMachine.addVendingItem(line);
+                vendingMachine.loadVendingItemLine(line);
             }
             loadSuccess = true;
         } catch (FileNotFoundException e) {
@@ -89,7 +106,7 @@ public class VendingMachineCLI {
                     purchaseMenu();
                     break;
                 case MAIN_MENU_OPTION_EXIT:
-                    menu.displayExitMessage();
+                    menu.displayMessage(VENDING_MACHINE_EXIT_MESSAGE);
                     loop = false;
                     break;
             }
@@ -106,7 +123,7 @@ public class VendingMachineCLI {
             } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
-            menu.displayCurrentMoneyProvided(vendingMachine.getBalanceAsCurrency());
+            menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.getBalanceAsFormattedCurrency());
         }
     }
 
@@ -130,20 +147,29 @@ public class VendingMachineCLI {
         }
     }
 
+    // Returns VendingItem so code is extensible to eventually pass a vending item
+    // to the client, currently unnecessary
     private VendingItem selectProductMenu() {
         VendingItem vendingItem = null;
 
-        menu.displayVendingMachineItems(vendingMachine.toString());
-        menu.displayCurrentMoneyProvided(vendingMachine.getBalanceAsCurrency());
+        menu.displayMessage(vendingMachine.toString());
+        menu.displayMessage(vendingMachine.getBalanceAsFormattedCurrency());
 
         String slotLocation = menu.getSlotLocationFromUser();
 
         if (!vendingMachine.isValidSlotLocation(slotLocation)) {
-            menu.displayMenuItemDoesNotExist();
+            menu.displayMessage(INVALID_SLOT_LOCATION);
         } else if (!vendingMachine.isVendingItemInStock(slotLocation)) {
-            menu.displayMenuItemIsSoldOut();
+            menu.displayMessage(VENDING_ITEM_IS_SOLD_OUT);
         } else {
-            vendingItem = vendingMachine.dispenseVendingItem(slotLocation);
+            double vendingItemPrice = (vendingMachine.getSlotLocationToVendingItems()
+                    .get(slotLocation).get(0).getPrice());
+            if (vendingItemPrice <= vendingMachine.getBalance()) {
+                vendingItem = vendingMachine.dispenseVendingItem(slotLocation);
+                menu.displayMessage(vendingItem.getDispenseMessage());
+            }
+            else
+                menu.displayMessage(INSUFFICIENT_FUNDS);
         }
         return vendingItem;
     }
@@ -161,6 +187,6 @@ public class VendingMachineCLI {
     }
 
     private void displayVendingMachineItems() {
-        menu.displayVendingMachineItems(vendingMachine.toString());
+        menu.displayMessage(vendingMachine.toString());
     }
 }

@@ -9,21 +9,32 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class VendingMachine {
-    private double balance; // TODO: NumberFormat currency instance for balance instance variable
-    private final Map<String, List<VendingItem>> slotLocationToVendingItems; //TODO: make VendingItem abstract class and at least one child class
+    private double balance;
+    private final Map<String, List<VendingItem>> slotLocationToVendingItems;
 
+    // CURRENCY is used to format the double when printing the balance
     private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
 
     // Format helper constants for toString() method
+    // Replaces 'magic strings' in toString method
+    // Unsure if this save memory, but it does make code more readable
     private static final String SLOT_LOCATION = "Slot Location";
     private static final String ITEM_NAME = "Item";
     private static final String PRICE = "Price";
     private static final String QUANTITY = "Quantity";
     private static final String DELIMITER = ": ";
     private static final String SPACE = " ";
+    private static final String SOLD_OUT = "SOLD_OUT";
+
+    private static final int CENTS_PER_DOLLAR = 100;
+    private static final int CENTS_PER_QUARTER = 25;
+    private static final int CENTS_PER_DIME = 10;
+    private static final int CENTS_PER_NICKEL = 5;
 
     public VendingMachine() {
         this.balance = 0.00;
+        // TreeMap used here to assist in ordered printing by slot location key
+        // Ex: A1 is printed first, D4 is printed last in toString() method
         this.slotLocationToVendingItems = new TreeMap<>();
     }
 
@@ -31,11 +42,16 @@ public class VendingMachine {
         this.balance += moneyToAdd;
     }
 
+    // Method assumes checking for valid VendingItem has already happened
+    // In this implementation that is done in VendingMachineCLI
     public VendingItem dispenseVendingItem(String slotLocation) {
-        return slotLocationToVendingItems.get(slotLocation).get(0);
+        VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
+        double price = vendingItem.getPrice();
+        this.balance -= price;
+        return vendingItem;
     }
 
-    public void addVendingItem(String line) {
+    public void loadVendingItemLine(String line) {
         String[] parts = line.split("\\|");
         String slotLocation = parts[0];
         String itemName = parts[1];
@@ -86,19 +102,39 @@ public class VendingMachine {
         return balance;
     }
 
-    public String getBalanceAsCurrency() {
+    public String getBalanceAsFormattedCurrency() {
         return CURRENCY.format(getBalance());
+    }
+
+    public String giveChange() {
+        int balanceAsInt = (int) (balance * CENTS_PER_DOLLAR);
+        resetBalance();
+
+        int quarters = balanceAsInt / CENTS_PER_QUARTER;
+        balanceAsInt -= quarters * CENTS_PER_QUARTER;
+
+        int dimes = balanceAsInt / CENTS_PER_DIME;
+        balanceAsInt -= dimes * CENTS_PER_DIME;
+
+        // balanceAsInt should always be a multiple of CENTS_PER_NICKEL
+        int nickels = balanceAsInt / CENTS_PER_NICKEL;
+
+        return String.format("Change due: %d quarters %d dimes %d nickels", quarters, dimes, nickels);
+    }
+
+    public void resetBalance() {
+        this.balance = 0;
     }
 
     // Formatting toString() method to print slot location, item name, price, and quantity
     // Does not keep record of what is sold out, only indicates that the slot is SOLD OUT
-    // if list is empty
+    // when list is empty
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String slotLocation : slotLocationToVendingItems.keySet()) {
             if (slotLocationToVendingItems.get(slotLocation).isEmpty())
-                sb.append("SOLD OUT").append(System.lineSeparator());
+                sb.append(SOLD_OUT).append(System.lineSeparator());
             else {
                 int vendingItemQuantity = slotLocationToVendingItems.get(slotLocation).size();
                 VendingItem vendingItem = slotLocationToVendingItems.get(slotLocation).get(0);

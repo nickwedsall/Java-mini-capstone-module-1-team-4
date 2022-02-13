@@ -58,39 +58,9 @@ public class Menu {
         out.flush();
     }
 
-    public void displayVendingMachineItems(String vendingMachineItems) {
+    public void displayMessage(String message) {
         out.println();
-        out.print(vendingMachineItems);
-        out.flush();
-    }
-
-    public void displayCurrentMoneyProvided(String currentMoneyProvided) {
-        out.println();
-        out.println("Current Money Provided: " + currentMoneyProvided);
-        out.flush();
-    }
-
-    public void displayMenuItemDoesNotExist() {
-        out.println();
-        out.println("Invalid vending code");
-        out.flush();
-    }
-
-    public void displayMenuItemIsSoldOut() {
-        out.println();
-        out.println("Item is SOLD OUT");
-        out.flush();
-    }
-
-    public void displayExitMessage() {
-        out.println("");
-        out.println("Thank you for your business!");
-        out.flush();
-    }
-
-    public void displayErrorMessage() {
-        out.println("");
-        out.println("Failed to load file!  VendingMachine will self destruct in five seconds...");
+        out.println(message);
         out.flush();
     }
 }
