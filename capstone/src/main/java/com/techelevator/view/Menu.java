@@ -24,6 +24,8 @@ public class Menu {
         return choice;
     }
 
+    // public void displayPurchaseMenu()
+
     public String getSlotLocationFromUser() {
         out.println();
         out.print("Enter slot location: ");
@@ -48,7 +50,7 @@ public class Menu {
         return choice;
     }
 
-    private void displayMenuOptions(Object[] options) {
+    public void displayMenuOptions(Object[] options) {
         out.println();
         for (int i = 0; i < options.length; i++) {
             int optionNum = i + 1;

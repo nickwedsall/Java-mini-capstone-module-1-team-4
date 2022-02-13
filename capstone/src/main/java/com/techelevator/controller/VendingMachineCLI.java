@@ -33,7 +33,7 @@ public class VendingMachineCLI {
     };
 
     // Feed Money menu options
-    // TODO: use currency of NumberFormat instead of saving Strings of dollar amounts
+    // TODO: use currency of NumberFormat instead of saving Strings of dollar amounts??
     private static final double ONE_DOLLAR = 1.00;
     private static final double TWO_DOLLARS = 2.00;
     private static final double FIVE_DOLLARS = 5.00;
@@ -52,15 +52,14 @@ public class VendingMachineCLI {
     };
 
     // All error messages to feed to Menu class
-    private static final String INSUFFICIENT_FUNDS = "Insufficient funds!!";
+    private static final String INSUFFICIENT_FUNDS = "Insufficient funds!! Please feed more money.";
     private static final String INVALID_SLOT_LOCATION = "Invalid slot location!!";
     private static final String VENDING_ITEM_IS_SOLD_OUT = "Vending item is SOLD OUT!!";
     private static final String VENDING_MACHINE_LOAD_ERROR_MESSAGE = "Failed to load file! VendingMachine will self destruct in five seconds...";
 
-    // All menu prompts
+    // Prompts
     private static final String CURRENT_MONEY_PROVIDED = "Current Money Provided: ";
     private static final String VENDING_MACHINE_EXIT_MESSAGE = "Thank you for your business!";
-
 
     private final Menu menu;
     private final VendingMachine vendingMachine;
@@ -123,7 +122,6 @@ public class VendingMachineCLI {
             } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH)) {
                 break;
             }
-            menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.getBalanceAsFormattedCurrency());
         }
     }
 
@@ -153,7 +151,7 @@ public class VendingMachineCLI {
         VendingItem vendingItem = null;
 
         menu.displayMessage(vendingMachine.toString());
-        menu.displayMessage(vendingMachine.getBalanceAsFormattedCurrency());
+        menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.getBalanceAsFormattedCurrency());
 
         String slotLocation = menu.getSlotLocationFromUser();
 
@@ -167,8 +165,7 @@ public class VendingMachineCLI {
             if (vendingItemPrice <= vendingMachine.getBalance()) {
                 vendingItem = vendingMachine.dispenseVendingItem(slotLocation);
                 menu.displayMessage(vendingItem.getDispenseMessage());
-            }
-            else
+            } else
                 menu.displayMessage(INSUFFICIENT_FUNDS);
         }
         return vendingItem;
