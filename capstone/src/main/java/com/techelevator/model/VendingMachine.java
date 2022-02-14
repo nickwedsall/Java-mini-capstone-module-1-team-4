@@ -68,7 +68,6 @@ public class VendingMachine {
     // In this implementation that is done in VendingMachineCLI
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
-
         String initialBalance = formatDoubleAsCurrency(balance);
 
         this.balance -= vendingItem.getPrice();
@@ -85,6 +84,7 @@ public class VendingMachine {
         return localDateTime.format(format);
     }
 
+    // Need this helper method to help with printing to hidden save records
     private String formattedDateAndTimeForSalesRecord() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MM-dd-uuuu-hh-mm-ss-a");

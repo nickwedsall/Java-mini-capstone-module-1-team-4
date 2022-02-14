@@ -1,6 +1,7 @@
 package com.techelevator.domain;
 
 import java.text.NumberFormat;
+import java.util.Objects;
 
 public abstract class VendingItem {
     private final String itemName;
@@ -10,6 +11,19 @@ public abstract class VendingItem {
     public VendingItem(String itemName, double price) {
         this.itemName = itemName;
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VendingItem)) return false;
+        VendingItem that = (VendingItem) o;
+        return Double.compare(that.getPrice(), getPrice()) == 0 && getItemName().equals(that.getItemName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getItemName(), getPrice());
     }
 
     public abstract String getDispenseMessage();
