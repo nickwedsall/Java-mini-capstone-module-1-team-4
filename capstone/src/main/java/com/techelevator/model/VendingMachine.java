@@ -14,7 +14,8 @@ public class VendingMachine {
     private double balance;
     private final Map<String, List<VendingItem>> slotLocationToVendingItems;
     private final String LOG_PATH_NAME = "Log.txt";
-    private PrintWriter printWriter;
+    private PrintWriter log;
+    private PrintWriter salesReport;
 
     // CURRENCY is used to format the double when printing the balance
     private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
@@ -40,13 +41,14 @@ public class VendingMachine {
     private static final String FEED_MONEY = "FEED MONEY:";
     private static final String GIVE_CHANGE = "GIVE CHANGE:";
 
+    // TODO: Test VendingMachine Constructor for initially empty TreeMap and balance is zero
     public VendingMachine() {
         this.balance = 0.00;
         // TreeMap used here to assist in ordered printing by slot location key
         // Ex: A1 is printed first, D4 is printed last in toString() method
         this.slotLocationToVendingItems = new TreeMap<>();
     }
-
+    //TODO: Test feedMoney() to make sure money is added appropriately to balance
     public void feedMoney(double moneyToAdd) {
         String moneyToAddFormatted = formatDoubleAsCurrency(moneyToAdd);
         this.balance += moneyToAdd;
@@ -57,6 +59,10 @@ public class VendingMachine {
 
     // Method assumes checking for valid VendingItem has already happened
     // In this implementation that is done in VendingMachineCLI
+
+    /** TODO: test dispenseVendingItem to make sure that a VendingItem is returned, balance is reduced by VendingItem price
+     */
+
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
 
@@ -68,18 +74,19 @@ public class VendingMachine {
         writeToLog(formattedDateAndTime(), vendingItem.getItemName(), slotLocation, initialBalance, finalBalance);
         return vendingItem;
     }
-
+    //TODO formattedDateAndTime returns appropriate form for date and time
     private String formattedDateAndTime() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a");
         return localDateTime.format(format);
     }
 
+    //TODO unsure how to test write to log
     private void writeToLog(String timeAndDate,
                             String functionCalled,
                             String initialBalance,
                             String finalBalance) {
-        printWriter.println(timeAndDate + SPACE +
+        log.println(timeAndDate + SPACE +
                 functionCalled + SPACE +
                 initialBalance + SPACE +
                 finalBalance);
@@ -90,13 +97,23 @@ public class VendingMachine {
                             String slotLocation,
                             String initialBalance,
                             String finalBalance) {
-        printWriter.println(timeAndDate + SPACE +
+        log.println(timeAndDate + SPACE +
                 itemName + SPACE +
                 slotLocation + SPACE +
                 initialBalance + SPACE +
                 finalBalance + SPACE);
     }
 
+    private void writeToHiddenSalesReport() {
+
+    }
+
+    // Map<String, Quantity>
+    private void calculateTotalSales() {
+
+    }
+
+    //TODO: VendingMachine populates map correctly (all items initialized to 5) and fails if file path error
     public boolean loadVendingMachine(String filePath) {
         boolean loadSuccess = false;
         File file = new File(filePath);
@@ -104,10 +121,12 @@ public class VendingMachine {
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
                 String[] parts = line.split("\\|");
+
                 String slotLocation = parts[0];
                 String itemName = parts[1];
                 double price = Double.parseDouble(parts[2]);
                 String className = parts[3];
+
                 List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION);
                 slotLocationToVendingItems.put(slotLocation, list);
             }
@@ -121,7 +140,7 @@ public class VendingMachine {
     public boolean createLogFile() {
         boolean fileCreated = false;
         try {
-            this.printWriter = new PrintWriter(LOG_PATH_NAME);
+            this.log = new PrintWriter(LOG_PATH_NAME);
             fileCreated = true;
         } catch (Exception e) {
             // Eat exception and return false
@@ -130,17 +149,19 @@ public class VendingMachine {
     }
 
     public void closeLogFile() {
-        this.printWriter.close();
+        this.log.close();
     }
-
+    // TODO: vendingItem is returned if slot location is not mapped to empty List<VendingItem>
     public boolean isVendingItemInStock(String slotLocation) {
         return slotLocationToVendingItems.get(slotLocation).size() != 0;
     }
 
+    //TODO isValidSlotLocation returns true if slot Location exists and false otherwise
     public boolean isValidSlotLocation(String slotLocation) {
         return slotLocationToVendingItems.containsKey(slotLocation);
     }
 
+    // TODO makeVendingItems returns a list of five VendingItems
     private List<VendingItem> makeVendingItems(String itemName, double price, String className, int quantity) {
         List<VendingItem> list = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
@@ -172,10 +193,12 @@ public class VendingMachine {
         return balance;
     }
 
+    // TODO returns appropriate formatting for balance
     public String formatDoubleAsCurrency(double balance) {
         return CURRENCY.format(balance);
     }
 
+    //TODO giveChange() returns correct amount of quarters, dimes, and nickels given a balance
     public String giveChange() {
         String initialBalance = formatDoubleAsCurrency(balance);
         int balanceAsInt = (int) (balance * CENTS_PER_DOLLAR);
@@ -201,6 +224,7 @@ public class VendingMachine {
                 quarters, dimes, nickels);
     }
 
+    // TODO resetBalance sets balance to zero
     private void resetBalance() {
         this.balance = 0;
     }
@@ -208,6 +232,7 @@ public class VendingMachine {
     // Formatting toString() method to print slot location, item name, price, and quantity
     // Does not keep record of what is sold out, only indicates that the slot is SOLD OUT
     // when list is empty
+    //TODO toString() returns the appropriate string from map
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
