@@ -43,7 +43,18 @@ public class VendingMachine {
     private static final String FEED_MONEY = "FEED MONEY:";
     private static final String GIVE_CHANGE = "GIVE CHANGE:";
 
-    // TODO: Test VendingMachine Constructor for initially empty TreeMap and balance is zero
+    public double getTotalSales() {
+        return totalSales;
+    }
+
+    public List<VendingItem> getVendingItemMasterList() {
+        return vendingItemMasterList;
+    }
+
+    public Map<String, Integer> getItemNameToQuantitySold() {
+        return itemNameToQuantitySold;
+    }
+
     public VendingMachine() {
         this.balance = 0.00;
         this.totalSales = 0.00;
