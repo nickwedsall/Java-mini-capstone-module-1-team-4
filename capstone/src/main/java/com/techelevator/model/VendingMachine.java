@@ -37,8 +37,8 @@ public class VendingMachine {
     private static final int MAX_VENDING_ITEMS_PER_SLOT_LOCATION = 5;
 
     // Log constant variables
-    private static final String FEED_MONEY = "FEED MONEY: ";
-    private static final String GIVE_CHANGE = "GIVE CHANGE: ";
+    private static final String FEED_MONEY = "FEED MONEY:";
+    private static final String GIVE_CHANGE = "GIVE CHANGE:";
 
     public VendingMachine() {
         this.balance = 0.00;
@@ -48,12 +48,10 @@ public class VendingMachine {
     }
 
     public void feedMoney(double moneyToAdd) {
-        String formattedDateAndTime = formattedDateAndTime();
-        String moneyToAddFormatted = formattDoubleAsCurrency(moneyToAdd);
+        String moneyToAddFormatted = formatDoubleAsCurrency(moneyToAdd);
         this.balance += moneyToAdd;
-        String finalBalance = formattDoubleAsCurrency(this.balance);
-        String logLine = formattedDateAndTime + FEED_MONEY + moneyToAddFormatted + " " + finalBalance;
-        this.printWriter.println(logLine);
+        String finalBalance = formatDoubleAsCurrency(this.balance);
+        writeToLog(formattedDateAndTime(), FEED_MONEY, moneyToAddFormatted, finalBalance);
     }
 
 
@@ -61,21 +59,42 @@ public class VendingMachine {
     // In this implementation that is done in VendingMachineCLI
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
-        String dateAndTime = formattedDateAndTime();
-        String initialBalance = formattDoubleAsCurrency(balance);
-        double price = vendingItem.getPrice();
-        this.balance -= price;
-        String finalBalance = formattDoubleAsCurrency(this.balance);
-        String logLine = dateAndTime + vendingItem.getItemName() + " "
-                + slotLocation + " " + initialBalance + " " + finalBalance;
-        this.printWriter.println(logLine);
+
+        String initialBalance = formatDoubleAsCurrency(balance);
+
+        this.balance -= vendingItem.getPrice();
+        String finalBalance = formatDoubleAsCurrency(this.balance);
+
+        writeToLog(formattedDateAndTime(), vendingItem.getItemName(), slotLocation, initialBalance, finalBalance);
         return vendingItem;
     }
 
     private String formattedDateAndTime() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a ");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a");
         return localDateTime.format(format);
+    }
+
+    private void writeToLog(String timeAndDate,
+                            String functionCalled,
+                            String initialBalance,
+                            String finalBalance) {
+        printWriter.println(timeAndDate + SPACE +
+                functionCalled + SPACE +
+                initialBalance + SPACE +
+                finalBalance);
+    }
+
+    private void writeToLog(String timeAndDate,
+                            String itemName,
+                            String slotLocation,
+                            String initialBalance,
+                            String finalBalance) {
+        printWriter.println(timeAndDate + SPACE +
+                itemName + SPACE +
+                slotLocation + SPACE +
+                initialBalance + SPACE +
+                finalBalance + SPACE);
     }
 
     public boolean loadVendingMachine(String filePath) {
@@ -153,13 +172,17 @@ public class VendingMachine {
         return balance;
     }
 
-    public String formattDoubleAsCurrency(double balance) {
+    public String formatDoubleAsCurrency(double balance) {
         return CURRENCY.format(balance);
     }
 
     public String giveChange() {
+        String initialBalance = formatDoubleAsCurrency(balance);
         int balanceAsInt = (int) (balance * CENTS_PER_DOLLAR);
         resetBalance();
+
+        String finalBalance = formatDoubleAsCurrency(balance);
+        writeToLog(formattedDateAndTime(), GIVE_CHANGE, initialBalance, finalBalance);
 
         int quarters = balanceAsInt / CENTS_PER_QUARTER;
         balanceAsInt -= quarters * CENTS_PER_QUARTER;
