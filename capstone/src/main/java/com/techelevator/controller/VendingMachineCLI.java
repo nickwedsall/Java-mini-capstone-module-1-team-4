@@ -99,7 +99,7 @@ public class VendingMachineCLI {
                     break;
                 case HIDDEN_SALES_REPORT:
                     // write code here
-                    vendingMachine.printVendingItemsMasterList();
+                    vendingMachine.writeSalesRecordFile();
                     break;
             }
         }

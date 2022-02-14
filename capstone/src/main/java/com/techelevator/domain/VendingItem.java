@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public abstract class VendingItem {
     private final String itemName;
-    private final double price;
+    private double price;
     private static final String DISPENSE_MESSAGE_SUFFIX = ", Yum!";
 
     public VendingItem(String itemName, double price) {

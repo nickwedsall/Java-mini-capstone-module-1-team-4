@@ -12,12 +12,12 @@ import java.io.PrintWriter;
 
 public class VendingMachine {
     private double balance;
+    private double totalSales;
     private final Map<String, List<VendingItem>> slotLocationToVendingItems;
     private final List<VendingItem> vendingItemMasterList; // Add vending item as you load from file to this list also
-    private final Map<String, Integer> itemNameToQuantitySold;
+    private final Map<String, Integer> itemNameToQuantitySold;  // Do not need vendingItemMasterList after this implementation
     private final String LOG_PATH_NAME = "Log.txt";
     private PrintWriter log;
-    //private PrintWriter salesReport;
 
     // CURRENCY is used to format the double when printing the balance
     private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
@@ -46,11 +46,12 @@ public class VendingMachine {
     // TODO: Test VendingMachine Constructor for initially empty TreeMap and balance is zero
     public VendingMachine() {
         this.balance = 0.00;
+        this.totalSales = 0.00;
         // TreeMap used here to assist in ordered printing by slot location key
         // Ex: A1 is printed first, D4 is printed last in toString() method
         this.slotLocationToVendingItems = new TreeMap<>();
+        this.itemNameToQuantitySold = new HashMap<>();
         this.vendingItemMasterList = new ArrayList<>();
-        this.itemNameToQuantitySold = new TreeMap<>();
     }
 
     //TODO: Test feedMoney() to make sure money is added appropriately to balance
@@ -66,8 +67,17 @@ public class VendingMachine {
      */
     // Method assumes checking for valid VendingItem has already happened
     // In this implementation that is done in VendingMachineCLI
+    // Dispensing a VendingItem must track the total sales
+    //
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
+        String vendingItemName = vendingItem.getItemName();
+
+        // This code increments the total sales of this item by one
+        itemNameToQuantitySold.put(vendingItemName, itemNameToQuantitySold.get(vendingItemName) + 1);
+        // Keep this total sales number to print to sales log
+        this.totalSales += vendingItem.getPrice();
+
         String initialBalance = formatDoubleAsCurrency(balance);
 
         this.balance -= vendingItem.getPrice();
@@ -113,21 +123,23 @@ public class VendingMachine {
                 initialBalance + SPACE +
                 finalBalance + SPACE);
     }
-    /*
-    private void writeToHiddenSalesReport() {
 
-    }
+    // Writes hidden menu sales record
+    public void writeSalesRecordFile() {
+        String fileName = "sales-record-" + formattedDateAndTimeForSalesRecord() + ".txt";
+        File salesRecord = new File(fileName);
 
-    // Map<String, Quantity>
-    private void calculateTotalSales() {
-
-    }
-
-     */
-
-    public void printVendingItemsMasterList() {
-        for (VendingItem vendingItem : vendingItemMasterList) {
-            System.out.println(vendingItem);
+        try (PrintWriter fileWriter = new PrintWriter(salesRecord)) {
+            // ArrayList<VendingItem> used to maintain order for printing
+            for (VendingItem vendingItem : vendingItemMasterList) {
+                String itemName = vendingItem.getItemName();
+                String line = itemName + "|" + itemNameToQuantitySold.get(itemName);
+                fileWriter.println(line);
+            }
+            fileWriter.println();
+            fileWriter.println(System.lineSeparator() + "Total Sales: " + CURRENCY.format(totalSales));
+        } catch (Exception e){
+            // Eat Exception
         }
     }
 
@@ -146,13 +158,22 @@ public class VendingMachine {
                 String className = parts[3];
                 List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION);
                 slotLocationToVendingItems.put(slotLocation, list);
-                this.vendingItemMasterList.add(list.get(0));
+
+
+                if (!vendingItemMasterList.contains(list.get(0)))
+                    this.vendingItemMasterList.add(list.get(0));
             }
+            initializeItemNameToQuantitySold();
             loadSuccess = true;
         } catch (FileNotFoundException e) {
             // eat exception
         }
         return loadSuccess;
+    }
+
+    private void initializeItemNameToQuantitySold() {
+        for (VendingItem vendingItem : vendingItemMasterList)
+            itemNameToQuantitySold.put(vendingItem.getItemName(), 0);
     }
 
     public boolean createLogFile() {
