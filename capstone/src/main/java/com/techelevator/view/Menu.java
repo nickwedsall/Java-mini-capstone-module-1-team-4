@@ -15,6 +15,7 @@ public class Menu {
         this.in = new Scanner(input);
     }
 
+
     public Object getChoiceFromOptions(Object[] options) {
         Object choice = null;
         while (choice == null) {
@@ -34,11 +35,54 @@ public class Menu {
         out.flush();
     }
 
+    // Hidden sales report functionality in main menu
+    public Object getChoiceForMainMenuFromOptions(Object[] options) {
+        Object choice = null;
+        while (choice == null) {
+            displayMenuOptions(options);
+            choice = getChoiceForMainMenuFromUserInput(options);
+        }
+        return choice;
+    }
+
     public Object getPurchaseMenuChoiceFromOptions(Object[] options, String currentMoneyProvided) {
         Object choice = null;
         while (choice == null) {
             displayPurchaseMenuOptions(options, currentMoneyProvided);
             choice = getChoiceFromUserInput(options);
+        }
+        return choice;
+    }
+
+    private void displayPurchaseMenuOptions(Object[] options, String currentMoneyProvided) {
+        out.println();
+        for (int i = 0; i < options.length; i++) {
+            int optionNum = i + 1;
+            out.println(optionNum + ") " + options[i]);
+        }
+        out.println();
+        out.println("Current money provided: " + currentMoneyProvided);
+        out.print(System.lineSeparator() + "Please choose an option >>> ");
+        out.flush();
+    }
+
+    // Same as
+    private Object getChoiceForMainMenuFromUserInput(Object[] options) {
+        Object choice = null;
+        String userInput = in.nextLine();
+        try {
+            int selectedOption = Integer.valueOf(userInput);
+            if (selectedOption > 0 && selectedOption <= options.length) {
+                choice = options[selectedOption - 1];
+            }
+            if (selectedOption == options.length + 1) {
+                choice = "Hidden sales report";
+            }
+        } catch (NumberFormatException e) {
+            // eat the exception, an error message will be displayed below since choice will be null
+        }
+        if (choice == null) {
+            invalidOption(userInput);
         }
         return choice;
     }
@@ -55,9 +99,13 @@ public class Menu {
             // eat the exception, an error message will be displayed below since choice will be null
         }
         if (choice == null) {
-            out.println(System.lineSeparator() + "*** " + userInput + " is not a valid option ***" + System.lineSeparator());
+            invalidOption(userInput);
         }
         return choice;
+    }
+
+    private void invalidOption(String userInput) {
+        out.println(System.lineSeparator() + "*** " + userInput + " is not a valid option ***" + System.lineSeparator());
     }
 
     public String getSlotLocationInput() {
@@ -65,18 +113,6 @@ public class Menu {
         out.print("Enter slot location: ");
         out.flush();
         return in.nextLine();
-    }
-
-    private void displayPurchaseMenuOptions(Object[] options, String currentMoneyProvided) {
-        out.println();
-        for (int i = 0; i < options.length; i++) {
-            int optionNum = i + 1;
-            out.println(optionNum + ") " + options[i]);
-        }
-        out.println();
-        out.println("Current money provided: " + currentMoneyProvided);
-        out.print(System.lineSeparator() + "Please choose an option >>> ");
-        out.flush();
     }
 
     public void displayMessage(String message) {
