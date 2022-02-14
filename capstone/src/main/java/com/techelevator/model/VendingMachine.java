@@ -48,9 +48,7 @@ public class VendingMachine {
     }
 
     public void feedMoney(double moneyToAdd) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a ");
-        String formattedDateAndTime = localDateTime.format(format);
+        String formattedDateAndTime = formattedDateAndTime();
         String initialBalance = getBalanceAsFormattedCurrency();
         this.balance += moneyToAdd;
         String finalBalance = getBalanceAsFormattedCurrency();
@@ -63,9 +61,21 @@ public class VendingMachine {
     // In this implementation that is done in VendingMachineCLI
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
+        String dateAndTime = formattedDateAndTime();
+        String initialBalance = getBalanceAsFormattedCurrency();
         double price = vendingItem.getPrice();
         this.balance -= price;
+        String finalBalance = getBalanceAsFormattedCurrency();
+        String logLine = dateAndTime + vendingItem.getItemName() + " "
+                + slotLocation + " " + initialBalance + " " + finalBalance;
+        this.printWriter.println(logLine);
         return vendingItem;
+    }
+
+    private String formattedDateAndTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a ");
+        return localDateTime.format(format);
     }
 
     public boolean loadVendingMachine(String filePath) {
