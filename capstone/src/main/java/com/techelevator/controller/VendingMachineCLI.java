@@ -30,7 +30,6 @@ public class VendingMachineCLI {
     };
 
     // Feed Money menu options
-    // TODO: use currency of NumberFormat instead of saving Strings of dollar amounts??
     private static final double ONE_DOLLAR = 1.00;
     private static final double TWO_DOLLARS = 2.00;
     private static final double FIVE_DOLLARS = 5.00;

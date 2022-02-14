@@ -48,6 +48,7 @@ public class VendingMachine {
         // Ex: A1 is printed first, D4 is printed last in toString() method
         this.slotLocationToVendingItems = new TreeMap<>();
     }
+
     //TODO: Test feedMoney() to make sure money is added appropriately to balance
     public void feedMoney(double moneyToAdd) {
         String moneyToAddFormatted = formatDoubleAsCurrency(moneyToAdd);
@@ -60,7 +61,8 @@ public class VendingMachine {
     // Method assumes checking for valid VendingItem has already happened
     // In this implementation that is done in VendingMachineCLI
 
-    /** TODO: test dispenseVendingItem to make sure that a VendingItem is returned, balance is reduced by VendingItem price
+    /**
+     * TODO: test dispenseVendingItem to make sure that a VendingItem is returned, balance is reduced by VendingItem price
      */
 
     public VendingItem dispenseVendingItem(String slotLocation) {
@@ -74,6 +76,7 @@ public class VendingMachine {
         writeToLog(formattedDateAndTime(), vendingItem.getItemName(), slotLocation, initialBalance, finalBalance);
         return vendingItem;
     }
+
     //TODO formattedDateAndTime returns appropriate form for date and time
     private String formattedDateAndTime() {
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -127,7 +130,7 @@ public class VendingMachine {
                 double price = Double.parseDouble(parts[2]);
                 String className = parts[3];
 
-                List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION);
+                List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION + 1);
                 slotLocationToVendingItems.put(slotLocation, list);
             }
             loadSuccess = true;
@@ -151,9 +154,11 @@ public class VendingMachine {
     public void closeLogFile() {
         this.log.close();
     }
+
     // TODO: vendingItem is returned if slot location is not mapped to empty List<VendingItem>
+    // Fixed implementation for hidden sales menu so a list of size 1 is considered empty
     public boolean isVendingItemInStock(String slotLocation) {
-        return slotLocationToVendingItems.get(slotLocation).size() != 0;
+        return slotLocationToVendingItems.get(slotLocation).size() > 1;
     }
 
     //TODO isValidSlotLocation returns true if slot Location exists and false otherwise
@@ -161,7 +166,7 @@ public class VendingMachine {
         return slotLocationToVendingItems.containsKey(slotLocation);
     }
 
-    // TODO makeVendingItems returns a list of five VendingItems
+    // TODO makeVendingItems returns a list of six VendingItems
     private List<VendingItem> makeVendingItems(String itemName, double price, String className, int quantity) {
         List<VendingItem> list = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
@@ -237,19 +242,19 @@ public class VendingMachine {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String slotLocation : slotLocationToVendingItems.keySet()) {
-            if (slotLocationToVendingItems.get(slotLocation).isEmpty())
+            int vendingItemQuantity = slotLocationToVendingItems.get(slotLocation).size() - 1;
+            VendingItem vendingItem = slotLocationToVendingItems.get(slotLocation).get(0);
+            String itemName = vendingItem.getItemName();
+            double price = vendingItem.getPrice();
+
+            sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
+                    .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
+                    .append(PRICE).append(DELIMITER).append(CURRENCY.format(price)).append(SPACE)
+                    .append(QUANTITY).append(DELIMITER);
+            if (vendingItemQuantity == 0)
                 sb.append(SOLD_OUT).append(System.lineSeparator());
             else {
-                int vendingItemQuantity = slotLocationToVendingItems.get(slotLocation).size();
-                VendingItem vendingItem = slotLocationToVendingItems.get(slotLocation).get(0);
-                String itemName = vendingItem.getItemName();
-                double price = vendingItem.getPrice();
-
-                sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
-                        .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
-                        .append(PRICE).append(DELIMITER).append(CURRENCY.format(price)).append(SPACE)
-                        .append(QUANTITY).append(DELIMITER).append(vendingItemQuantity)
-                        .append(System.lineSeparator());
+                sb.append(vendingItemQuantity).append(System.lineSeparator());
             }
         }
         return sb.toString();
