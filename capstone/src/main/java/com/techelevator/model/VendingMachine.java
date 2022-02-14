@@ -49,10 +49,10 @@ public class VendingMachine {
 
     public void feedMoney(double moneyToAdd) {
         String formattedDateAndTime = formattedDateAndTime();
-        String initialBalance = getBalanceAsFormattedCurrency();
+        String moneyToAddFormatted = formattDoubleAsCurrency(moneyToAdd);
         this.balance += moneyToAdd;
-        String finalBalance = getBalanceAsFormattedCurrency();
-        String logLine = formattedDateAndTime + FEED_MONEY + initialBalance + " " + finalBalance;
+        String finalBalance = formattDoubleAsCurrency(this.balance);
+        String logLine = formattedDateAndTime + FEED_MONEY + moneyToAddFormatted + " " + finalBalance;
         this.printWriter.println(logLine);
     }
 
@@ -62,10 +62,10 @@ public class VendingMachine {
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
         String dateAndTime = formattedDateAndTime();
-        String initialBalance = getBalanceAsFormattedCurrency();
+        String initialBalance = formattDoubleAsCurrency(balance);
         double price = vendingItem.getPrice();
         this.balance -= price;
-        String finalBalance = getBalanceAsFormattedCurrency();
+        String finalBalance = formattDoubleAsCurrency(this.balance);
         String logLine = dateAndTime + vendingItem.getItemName() + " "
                 + slotLocation + " " + initialBalance + " " + finalBalance;
         this.printWriter.println(logLine);
@@ -153,8 +153,8 @@ public class VendingMachine {
         return balance;
     }
 
-    public String getBalanceAsFormattedCurrency() {
-        return CURRENCY.format(getBalance());
+    public String formattDoubleAsCurrency(double balance) {
+        return CURRENCY.format(balance);
     }
 
     public String giveChange() {

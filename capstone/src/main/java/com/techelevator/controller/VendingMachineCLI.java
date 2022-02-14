@@ -147,7 +147,7 @@ public class VendingMachineCLI {
         VendingItem vendingItem = null;
 
         menu.displayMessage(vendingMachine.toString());
-        menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.getBalanceAsFormattedCurrency());
+        menu.displayMessage(CURRENT_MONEY_PROVIDED + vendingMachine.formattDoubleAsCurrency(vendingMachine.getBalance()));
 
         String slotLocation = menu.getSlotLocationInput();
 
@@ -173,7 +173,7 @@ public class VendingMachineCLI {
     }
 
     private String getPurchaseMenuChoice() {
-        return (String) menu.getPurchaseMenuChoiceFromOptions(PURCHASE_MENU_OPTIONS, vendingMachine.getBalanceAsFormattedCurrency());
+        return (String) menu.getPurchaseMenuChoiceFromOptions(PURCHASE_MENU_OPTIONS, vendingMachine.formattDoubleAsCurrency(vendingMachine.getBalance()));
     }
 
     private String getFeedMoneyMenuChoice() {
