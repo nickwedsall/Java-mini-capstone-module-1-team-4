@@ -66,16 +66,19 @@ public class VendingMachineCLI {
     }
 
     public void run() {
-        if (loadVendingMachine()) {
+        if (loadVendingMachine() && createVendingMachineLog()) {
             mainMenu();
         } else {
             menu.displayMessage(VENDING_MACHINE_LOAD_ERROR_MESSAGE);
         }
     }
 
-    //TODO: Refactor load code into VendingMachine
     private boolean loadVendingMachine() {
-        return vendingMachine.loadVendingItemLine(FILE_PATH);
+        return vendingMachine.loadVendingMachine(FILE_PATH);
+    }
+
+    private boolean createVendingMachineLog() {
+        return vendingMachine.createLogFile();
     }
 
     private void mainMenu() {
@@ -92,22 +95,28 @@ public class VendingMachineCLI {
                 case MAIN_MENU_OPTION_EXIT:
                     menu.displayMessage(VENDING_MACHINE_EXIT_MESSAGE);
                     loop = false;
+                    vendingMachine.closeLogFile();
                     break;
             }
         }
     }
 
     private void purchaseMenu() {
-        while (true) { // TODO: Refactor to switch-case statement
+        boolean loop = true;
+        while (loop) {
             String choice = getPurchaseMenuChoice();
-            if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-                feedMoneyMenu();
-            } else if (choice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
-                selectProductMenu();
-            } else if (choice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
-                // write code here
-                menu.displayMessage(vendingMachine.giveChange());
-                break;
+            switch (choice) {
+                case PURCHASE_MENU_OPTION_FEED_MONEY:
+                    feedMoneyMenu();
+                    break;
+                case PURCHASE_MENU_OPTION_SELECT_PRODUCT:
+                    selectProductMenu();
+                    break;
+                case PURCHASE_MENU_OPTION_FINISH_TRANSACTION:
+                    // write code here
+                    menu.displayMessage(vendingMachine.giveChange());
+                    loop = false;
+                    break;
             }
         }
     }
@@ -116,16 +125,16 @@ public class VendingMachineCLI {
         String choice = getFeedMoneyMenuChoice();
         switch (choice) {
             case FEED_MONEY_MENU_OPTION_ONE_DOLLAR:
-                vendingMachine.addToBalance(ONE_DOLLAR);
+                vendingMachine.feedMoney(ONE_DOLLAR);
                 break;
             case FEED_MONEY_MENU_OPTION_TWO_DOLLARS:
-                vendingMachine.addToBalance(TWO_DOLLARS);
+                vendingMachine.feedMoney(TWO_DOLLARS);
                 break;
             case FEED_MONEY_MENU_OPTION_FIVE_DOLLARS:
-                vendingMachine.addToBalance(FIVE_DOLLARS);
+                vendingMachine.feedMoney(FIVE_DOLLARS);
                 break;
             case FEED_MONEY_MENU_OPTION_TEN_DOLLARS:
-                vendingMachine.addToBalance(TEN_DOLLARS);
+                vendingMachine.feedMoney(TEN_DOLLARS);
                 break;
             case FEED_MONEY_MENU_OPTION_EXIT:
                 break;

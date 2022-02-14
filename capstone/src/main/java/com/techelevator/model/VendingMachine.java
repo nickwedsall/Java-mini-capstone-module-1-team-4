@@ -5,11 +5,16 @@ import com.techelevator.domain.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.io.PrintWriter;
 
 public class VendingMachine {
     private double balance;
     private final Map<String, List<VendingItem>> slotLocationToVendingItems;
+    private final String LOG_PATH_NAME = "Log.txt";
+    private PrintWriter printWriter;
 
     // CURRENCY is used to format the double when printing the balance
     private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
@@ -29,6 +34,11 @@ public class VendingMachine {
     private static final int CENTS_PER_QUARTER = 25;
     private static final int CENTS_PER_DIME = 10;
     private static final int CENTS_PER_NICKEL = 5;
+    private static final int MAX_VENDING_ITEMS_PER_SLOT_LOCATION = 5;
+
+    // Log constant variables
+    private static final String FEED_MONEY = "FEED MONEY: ";
+    private static final String GIVE_CHANGE = "GIVE CHANGE: ";
 
     public VendingMachine() {
         this.balance = 0.00;
@@ -37,9 +47,17 @@ public class VendingMachine {
         this.slotLocationToVendingItems = new TreeMap<>();
     }
 
-    public void addToBalance(double moneyToAdd) {
+    public void feedMoney(double moneyToAdd) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a ");
+        String formattedDateAndTime = localDateTime.format(format);
+        String initialBalance = getBalanceAsFormattedCurrency();
         this.balance += moneyToAdd;
+        String finalBalance = getBalanceAsFormattedCurrency();
+        String logLine = formattedDateAndTime + FEED_MONEY + initialBalance + " " + finalBalance;
+        this.printWriter.println(logLine);
     }
+
 
     // Method assumes checking for valid VendingItem has already happened
     // In this implementation that is done in VendingMachineCLI
@@ -50,7 +68,7 @@ public class VendingMachine {
         return vendingItem;
     }
 
-    public boolean loadVendingItemLine(String filePath) {
+    public boolean loadVendingMachine(String filePath) {
         boolean loadSuccess = false;
         File file = new File(filePath);
         try (Scanner fileReader = new Scanner(file)) {
@@ -61,7 +79,7 @@ public class VendingMachine {
                 String itemName = parts[1];
                 double price = Double.parseDouble(parts[2]);
                 String className = parts[3];
-                List<VendingItem> list = makeVendingItems(itemName, price, className, 5);
+                List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION);
                 slotLocationToVendingItems.put(slotLocation, list);
             }
             loadSuccess = true;
@@ -69,6 +87,21 @@ public class VendingMachine {
             // eat exception
         }
         return loadSuccess;
+    }
+
+    public boolean createLogFile() {
+        boolean fileCreated = false;
+        try {
+            this.printWriter = new PrintWriter(LOG_PATH_NAME);
+            fileCreated = true;
+        } catch (Exception e) {
+            // Eat exception and return false
+        }
+        return fileCreated;
+    }
+
+    public void closeLogFile() {
+        this.printWriter.close();
     }
 
     public boolean isVendingItemInStock(String slotLocation) {
