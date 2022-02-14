@@ -13,16 +13,18 @@ import java.io.PrintWriter;
 public class VendingMachine {
     private double balance;
     private final Map<String, List<VendingItem>> slotLocationToVendingItems;
+    private final List<VendingItem> vendingItemMasterList; // Add vending item as you load from file to this list also
+    private final Map<String, Integer> itemNameToQuantitySold;
     private final String LOG_PATH_NAME = "Log.txt";
     private PrintWriter log;
-    private PrintWriter salesReport;
+    //private PrintWriter salesReport;
 
     // CURRENCY is used to format the double when printing the balance
     private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
 
     // Format helper constants for toString() method
     // Replaces 'magic strings' in toString method
-    // Unsure if this save memory, but it does make code more readable
+    // Unsure if this saves memory, but it does make code more readable
     private static final String SLOT_LOCATION = "Slot Location";
     private static final String ITEM_NAME = "Item";
     private static final String PRICE = "Price";
@@ -47,6 +49,8 @@ public class VendingMachine {
         // TreeMap used here to assist in ordered printing by slot location key
         // Ex: A1 is printed first, D4 is printed last in toString() method
         this.slotLocationToVendingItems = new TreeMap<>();
+        this.vendingItemMasterList = new ArrayList<>();
+        this.itemNameToQuantitySold = new TreeMap<>();
     }
 
     //TODO: Test feedMoney() to make sure money is added appropriately to balance
@@ -54,17 +58,14 @@ public class VendingMachine {
         String moneyToAddFormatted = formatDoubleAsCurrency(moneyToAdd);
         this.balance += moneyToAdd;
         String finalBalance = formatDoubleAsCurrency(this.balance);
-        writeToLog(formattedDateAndTime(), FEED_MONEY, moneyToAddFormatted, finalBalance);
+        writeToLog(formattedDateAndTimeForLog(), FEED_MONEY, moneyToAddFormatted, finalBalance);
     }
-
-
-    // Method assumes checking for valid VendingItem has already happened
-    // In this implementation that is done in VendingMachineCLI
 
     /**
      * TODO: test dispenseVendingItem to make sure that a VendingItem is returned, balance is reduced by VendingItem price
      */
-
+    // Method assumes checking for valid VendingItem has already happened
+    // In this implementation that is done in VendingMachineCLI
     public VendingItem dispenseVendingItem(String slotLocation) {
         VendingItem vendingItem = this.slotLocationToVendingItems.get(slotLocation).remove(0);
 
@@ -73,14 +74,20 @@ public class VendingMachine {
         this.balance -= vendingItem.getPrice();
         String finalBalance = formatDoubleAsCurrency(this.balance);
 
-        writeToLog(formattedDateAndTime(), vendingItem.getItemName(), slotLocation, initialBalance, finalBalance);
+        writeToLog(formattedDateAndTimeForLog(), vendingItem.getItemName(), slotLocation, initialBalance, finalBalance);
         return vendingItem;
     }
 
-    //TODO formattedDateAndTime returns appropriate form for date and time
-    private String formattedDateAndTime() {
+    //TODO formattedDateAndTimeForLog returns appropriate form for date and time
+    private String formattedDateAndTimeForLog() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a");
+        return localDateTime.format(format);
+    }
+
+    private String formattedDateAndTimeForSalesRecord() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM-dd-uuuu-hh-mm-ss-a");
         return localDateTime.format(format);
     }
 
@@ -106,7 +113,7 @@ public class VendingMachine {
                 initialBalance + SPACE +
                 finalBalance + SPACE);
     }
-
+    /*
     private void writeToHiddenSalesReport() {
 
     }
@@ -114,6 +121,14 @@ public class VendingMachine {
     // Map<String, Quantity>
     private void calculateTotalSales() {
 
+    }
+
+     */
+
+    public void printVendingItemsMasterList() {
+        for (VendingItem vendingItem : vendingItemMasterList) {
+            System.out.println(vendingItem);
+        }
     }
 
     //TODO: VendingMachine populates map correctly (all items initialized to 5) and fails if file path error
@@ -129,9 +144,9 @@ public class VendingMachine {
                 String itemName = parts[1];
                 double price = Double.parseDouble(parts[2]);
                 String className = parts[3];
-
-                List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION + 1);
+                List<VendingItem> list = makeVendingItems(itemName, price, className, MAX_VENDING_ITEMS_PER_SLOT_LOCATION);
                 slotLocationToVendingItems.put(slotLocation, list);
+                this.vendingItemMasterList.add(list.get(0));
             }
             loadSuccess = true;
         } catch (FileNotFoundException e) {
@@ -158,7 +173,7 @@ public class VendingMachine {
     // TODO: vendingItem is returned if slot location is not mapped to empty List<VendingItem>
     // Fixed implementation for hidden sales menu so a list of size 1 is considered empty
     public boolean isVendingItemInStock(String slotLocation) {
-        return slotLocationToVendingItems.get(slotLocation).size() > 1;
+        return slotLocationToVendingItems.get(slotLocation).size() > 0;
     }
 
     //TODO isValidSlotLocation returns true if slot Location exists and false otherwise
@@ -207,10 +222,12 @@ public class VendingMachine {
     public String giveChange() {
         String initialBalance = formatDoubleAsCurrency(balance);
         int balanceAsInt = (int) (balance * CENTS_PER_DOLLAR);
-        resetBalance();
 
+        resetBalance();
         String finalBalance = formatDoubleAsCurrency(balance);
-        writeToLog(formattedDateAndTime(), GIVE_CHANGE, initialBalance, finalBalance);
+
+        if (balanceAsInt != 0)
+            writeToLog(formattedDateAndTimeForLog(), GIVE_CHANGE, initialBalance, finalBalance);
 
         int quarters = balanceAsInt / CENTS_PER_QUARTER;
         balanceAsInt -= quarters * CENTS_PER_QUARTER;
@@ -242,20 +259,20 @@ public class VendingMachine {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String slotLocation : slotLocationToVendingItems.keySet()) {
-            int vendingItemQuantity = slotLocationToVendingItems.get(slotLocation).size() - 1;
-            VendingItem vendingItem = slotLocationToVendingItems.get(slotLocation).get(0);
-            String itemName = vendingItem.getItemName();
-            double price = vendingItem.getPrice();
+            int vendingItemQuantity = slotLocationToVendingItems.get(slotLocation).size();
+            if (vendingItemQuantity != 0) {
+                VendingItem vendingItem = slotLocationToVendingItems.get(slotLocation).get(0);
+                String itemName = vendingItem.getItemName();
+                double price = vendingItem.getPrice();
 
-            sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
-                    .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
-                    .append(PRICE).append(DELIMITER).append(CURRENCY.format(price)).append(SPACE)
-                    .append(QUANTITY).append(DELIMITER);
-            if (vendingItemQuantity == 0)
-                sb.append(SOLD_OUT).append(System.lineSeparator());
-            else {
-                sb.append(vendingItemQuantity).append(System.lineSeparator());
-            }
+
+                sb.append(SLOT_LOCATION).append(DELIMITER).append(slotLocation).append(SPACE)
+                        .append(ITEM_NAME).append(DELIMITER).append(itemName).append(SPACE)
+                        .append(PRICE).append(DELIMITER).append(CURRENCY.format(price)).append(SPACE)
+                        .append(QUANTITY).append(DELIMITER).append(vendingItemQuantity);
+            } else
+                sb.append(SOLD_OUT);
+            sb.append(System.lineSeparator());
         }
         return sb.toString();
     }
