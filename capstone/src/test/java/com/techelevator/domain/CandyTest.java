@@ -13,6 +13,7 @@ public class CandyTest {
     public void Candy() {
         this.testCandy = new Candy("testCandyName", 1.00);
     }
+
     @Test
     public void Candy_constructor_gives_correct_instance_variable_assignment() {
         // Arrange
@@ -38,7 +39,6 @@ public class CandyTest {
 
         //Assert
         Assert.assertEquals("getDispenseMessage() object does not return \"Munch Munch, Yum!\"", expectedString, actualString);
-
     }
 
     @Test
@@ -51,8 +51,5 @@ public class CandyTest {
 
         //Assert
         Assert.assertEquals("toString() did not return \"testCandyName $1.00\"", expected, actual);
-
-
     }
-
 }
