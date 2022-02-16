@@ -1,7 +1,6 @@
 package com.techelevator.domain;
 
 public class Chip extends VendingItem {
-    private static final String DISPENSE_MESSAGE_PREFIX = "Crunch Crunch";
 
     //TODO Chip Constructor gives appropriate name and price
     public Chip(String itemName, double price) {
@@ -11,7 +10,7 @@ public class Chip extends VendingItem {
     // TODO getDispenseMessage() returns "Crunch Crunch, Yum!"
     @Override
     public String getDispenseMessage() {
-        return dispenseVendingItemMessage(DISPENSE_MESSAGE_PREFIX);
+        return "Crunch Crunch, Yum!";
     }
 
     // TODO getString() method returns itemName + NumberFormat.getCurrencyInstance.format(getPrice())

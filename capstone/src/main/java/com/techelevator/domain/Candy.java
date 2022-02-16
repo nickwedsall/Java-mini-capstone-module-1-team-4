@@ -1,7 +1,6 @@
 package com.techelevator.domain;
 
 public class Candy extends VendingItem {
-    private static final String DISPENSE_MESSAGE_PREFIX = "Munch Munch";
 
     //TODO Candy Constructor gives appropriate name and price
     public Candy(String itemName, double price) {
@@ -11,7 +10,7 @@ public class Candy extends VendingItem {
     // TODO getDispenseMessage() returns "Munch Munch, Yum!"
     @Override
     public String getDispenseMessage() {
-        return dispenseVendingItemMessage(DISPENSE_MESSAGE_PREFIX);
+        return "Munch Munch, Yum!";
     }
 
     // TODO getString() method returns itemName + NumberFormat.getCurrencyInstance.format(getPrice())
